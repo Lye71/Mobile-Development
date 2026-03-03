@@ -1,0 +1,2 @@
+The app crashed because of a Sabotage error where the code tried to change a text display that was set to null, causing a NullPointerException since you can't give commands to something that doesn't exist.
+To fix this, I linked the display properly using its ID and added special State Preservation code that saves the counter value into a small digital bookmark before the rotation happens, then pulls it back once the screen is flipped so the number stays the same.
