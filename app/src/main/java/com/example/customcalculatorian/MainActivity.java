@@ -18,12 +18,28 @@ public class MainActivity extends AppCompatActivity {
     private boolean isNewOp = true;
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Save the current numbers and operator into the "Bundle"
+        outState.putString("displayVal", display.getText().toString());
+        outState.putDouble("operandA", firstOperand);
+        outState.putString("operator", currentOperator);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
         display = findViewById(R.id.display);
+
+        if (savedInstanceState != null) {
+            display.setText(savedInstanceState.getString("displayVal"));
+            firstOperand = savedInstanceState.getDouble("operandA");
+            currentOperator = savedInstanceState.getString("operator");
+            isNewOp = false; // Ensure we don't clear the restored number immediately
+        }
 
         // make buttons into array
         int[] numberIds = {
@@ -50,6 +66,17 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_minus).setOnClickListener(v -> prepareOp("-"));
         findViewById(R.id.btn_times).setOnClickListener(v -> prepareOp("*"));
         findViewById(R.id.btn_divide).setOnClickListener(v -> prepareOp("/"));
+
+        //special button
+        findViewById(R.id.btn_custom).setOnClickListener(v -> {
+            String displayText = display.getText().toString();
+            if (!displayText.isEmpty() && !displayText.equals("Cannot divide by zero")) {
+                double currentVal = Double.parseDouble(displayText);
+                double result = currentVal * 0.10; // Logic for ID ending in 010
+                display.setText(String.valueOf(result));
+                isNewOp = true;
+            }
+        });
 
         // Equals Button
         findViewById(R.id.btn_equals).setOnClickListener(v -> {
